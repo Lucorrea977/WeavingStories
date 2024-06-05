@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const axios = require('axios');
 
 const generateToken = (user) => {
   return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -8,23 +9,20 @@ const generateToken = (user) => {
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email } });
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-    const token = generateToken(user);
-    res.json({ token });
+    const response = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+    const token = generateToken(response.data.user); // Generar token JWT
+    res.json({ ...response.data, token }); // Enviar token junto con los datos de usuario
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(error.response.status).json({ error: error.response.data.error });
   }
 };
 
 exports.register = async (req, res) => {
   const { email, password } = req.body;
   try {
-    await User.create({ email, password });
-    res.status(201).json({ message: 'User registered successfully' });
+    const response = await axios.post('http://localhost:3000/api/auth/register', { email, password });
+    res.status(response.status).json(response.data);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(error.response.status).json({ error: error.response.data.error });
   }
 };
