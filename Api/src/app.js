@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const conversationRoutes = require('./routes/conversationRoutes');
+
 
 const app = express();
 
@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Rutas
-app.use('/conversations', conversationRoutes);
+
+
 
 module.exports = app;
