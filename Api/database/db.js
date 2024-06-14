@@ -2,10 +2,8 @@
 const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
 
-// Cargar variables de entorno desde el archivo .env
 dotenv.config();
 
-// Configuración de la conexión a la base de datos
 const sequelize = new Sequelize({
   dialect: 'postgres',
   host: process.env.DB_HOST,
@@ -14,9 +12,14 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   dialectOptions: {
-    ssl: process.env.NODE_ENV === 'production' ? true : false // Habilita SSL solo en entorno de producción
+    timezone: 'Etc/UTC', // Ajusta la zona horaria según sea necesario
+    ssl: process.env.NODE_ENV === 'production' ? true : false
   },
-  logging: false // Deshabilita los logs de Sequelize para evitar sobrecargar la consola
+  logging: false,
+  define: {
+    // Evitar que Sequelize cambie los nombres de las columnas a CamelCase
+    underscored: true,
+  },
 });
 
 // Manejo de errores durante la conexión a la base de datos
@@ -27,5 +30,10 @@ sequelize.authenticate()
   .catch(err => {
     console.error('Error al conectar con la base de datos:', err);
   });
+
+// Limpiar la caché de Sequelize (opcional en versiones modernas de Sequelize)
+if (sequelize.options && sequelize.options.queryCache) {
+  sequelize.options.queryCache.clear();
+}
 
 module.exports = sequelize;

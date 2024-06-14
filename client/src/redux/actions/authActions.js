@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 
 export const AUTH_ACTIONS = {
@@ -54,8 +53,10 @@ export const resetPassword = (formData, token) => async (dispatch) => {
     const response = await axios.post(`http://localhost:3001/api/password/reset-password/${token}`, formData);
     dispatch({ type: AUTH_ACTIONS.RESET_PASSWORD_SUCCESS, payload: response.data });
     console.log(response.data);
+    return response; // Asegúrate de devolver la respuesta aquí
   } catch (error) {
     dispatch({ type: AUTH_ACTIONS.RESET_PASSWORD_FAILURE, payload: error });
     console.error('Error al restablecer la contraseña:', error);
+    throw error; // Lanza el error para manejarlo en el componente
   }
 };
