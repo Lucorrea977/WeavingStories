@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../../database/db');
+const sequelize = require('../../database/connection');
 
 const User = sequelize.define('User', {
   username: {
@@ -21,6 +21,18 @@ const User = sequelize.define('User', {
   },
   resetTokenExpires: {
     type: DataTypes.DATE,
+    allowNull: true,
+  },
+  profilePicture: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  info: {
+    type: DataTypes.TEXT,
     allowNull: true,
   },
 }, {

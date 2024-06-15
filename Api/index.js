@@ -1,5 +1,5 @@
 const app = require('./src/app'); // Importa la aplicación Express
-const db = require('./database/db');
+const db = require('./database/connection');
 const port = process.env.PORT || 3001;
 
 // Sincronizar modelos con la base de datos

@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
-const User = require('../models/user');
+const User = require('../models/User');
 const { validateEmail, validatePassword}= require ('../utils/validation');
 
   async function registerUser(req, res) {
@@ -85,8 +85,10 @@ async function loginUser(req, res) {
 }
 
 
+
 module.exports = {
   registerUser,
   loginUser,
+  
 };
 
