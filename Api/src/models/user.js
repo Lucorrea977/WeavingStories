@@ -23,19 +23,8 @@ const User = sequelize.define('User', {
     type: DataTypes.DATE,
     allowNull: true,
   },
-  profilePicture: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-  },
-  info: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-  },
-}, {
+}, 
+{
   timestamps: true,
 });
 

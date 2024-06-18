@@ -1,5 +1,4 @@
-// redux/reducers/authReducer.js
-import { combineReducers } from 'redux';
+
 import { AUTH_ACTIONS } from '../actions/authActions';
 
 const initialState = {
@@ -7,10 +6,28 @@ const initialState = {
   user: null,
   token: null,
   error: null,
-};
+  loading: false,
+  message: null, // Añadido para manejar mensajes de éxito en las acciones de contraseña
+}
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
+    case AUTH_ACTIONS.REGISTER_SUCCESS:
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload.user,
+        token: action.payload.token,
+        error: null,
+      };
+    case AUTH_ACTIONS.REGISTER_FAILURE:
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
+        token: null,
+        error: action.payload.error,
+      };
     case AUTH_ACTIONS.LOGIN_SUCCESS:
       return {
         ...state,
@@ -48,8 +65,4 @@ const authReducer = (state = initialState, action) => {
   }
 };
 
-const rootReducer = combineReducers({
-  auth: authReducer,
-});
-
-export default rootReducer;
+export default authReducer;

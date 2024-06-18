@@ -6,6 +6,7 @@ import ForgotPassword from './views/Password/ForgotPassword'; // Nueva página p
 import ResetPassword from './views/Password/ResetPassword'; // Nueva página para restablecer contraseña
 import HomePage from './views/Home/HomePage';
 
+
 function App() {
   return (
     <Routes>
@@ -14,6 +15,7 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/home" element={<HomePage />} />
+
     </Routes>
   );
 }
