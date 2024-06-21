@@ -49,10 +49,12 @@ const { validateEmail, validatePassword}= require ('../utils/validation');
 
 
 
+
 async function loginUser(req, res) {
   try {
     const { identifier, password } = req.body;
     console.log('Datos recibidos en loginUser:', { identifier, password });
+    
     // Verificar si el usuario existe por correo electrónico o nombre de usuario
     const user = await User.findOne({
       where: {
@@ -85,10 +87,8 @@ async function loginUser(req, res) {
 }
 
 
-
 module.exports = {
   registerUser,
   loginUser,
   
 };
-
