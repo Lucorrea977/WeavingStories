@@ -3,7 +3,7 @@ const db = require('./database/connection');
 const port = process.env.PORT || 3001;
 
 // Sincronizar modelos con la base de datos
-db.sync()
+db.sync({ alter: true })
   .then(() => {
     console.log('Base de datos sincronizada correctamente.');
     

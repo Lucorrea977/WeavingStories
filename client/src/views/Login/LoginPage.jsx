@@ -8,20 +8,32 @@ function LoginPage() {
   const navigate = useNavigate();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(loginUser({ identifier: identifier.trim(), password }))
       .then(() => {
-        navigate('/home');
+        navigate('/profile');
       })
       .catch((error) => {
-        setErrorMessage('Email o contraseña incorrectos.'); // Mensaje de error
-        console.error('Error al iniciar sesión:', error);
+        const { response } = error;
+        if (response) {
+          const { status, data } = response;
+          if (status === 404) {
+            setErrorMessage(data.message || 'Usuario no encontrado.');
+          } else if (status === 401) {
+            setErrorMessage(data.message || 'Contraseña incorrecta.');
+          } else {
+            setErrorMessage('Error en el inicio de sesión. Por favor intente de nuevo.');
+          }
+        } else {
+          setErrorMessage('Error de red. Verifique su conexión y vuelva a intentarlo.');
+        }
       });
   };
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -54,8 +66,8 @@ function LoginPage() {
             Mostrar contraseña
           </label>
         </div>
+        {errorMessage && <p className="mt-2 text-red-500">{errorMessage}</p>}
         <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Login</button>
-        {errorMessage && <p className="mt-2 text-red-500">{errorMessage}</p>} {/* Mensaje de error */}
       </form>
       <p className="mt-4">¿No tienes una cuenta? <Link to="/register" className="text-blue-500 hover:underline">Registrarse</Link></p>
       <p><Link to="/forgot-password" className="text-blue-500 hover:underline">¿Has olvidado tu contraseña?</Link></p>

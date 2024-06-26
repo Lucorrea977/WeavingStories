@@ -1,41 +1,68 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../redux/actions/authActions';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
-  const [passwordError, setPasswordError] = useState('');
+  const [passwordError, setPasswordError] = useState(''); // Estado para manejar errores de validación
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Hook para redirección
+  const navigate = useNavigate(); // Hook para la navegación
 
+  // Función para manejar cambios en los campos del formulario
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Función para enviar el formulario de registro
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validatePassword(formData.password)) {
+
+    const { username, email, password } = formData;
+
+    // Validar contraseña usando la función de validación
+    if (!validatePassword(password)) {
       setPasswordError('La contraseña debe tener al menos 6 caracteres, una letra mayúscula y un número.');
       return;
     }
-    dispatch(registerUser(formData))
-      .then((response) => {
-        console.log('Registro exitoso:', response);
-        navigate('/'); // Redirigir al login
+
+    // Resetear errores previos
+    setPasswordError('');
+
+    // Llamar a la acción de registro del usuario
+    dispatch(registerUser({ username, email, password }))
+      .then(() => {
+        navigate('/'); // Redirigir al inicio de sesión después del registro exitoso
       })
       .catch((error) => {
-        console.error('Error en el registro:', error);
-        // Mostrar un mensaje de error si es necesario
+        const { response } = error;
+        if (response) {
+          const { status, data } = response;
+          if (status === 400) {
+            if (data.message.includes('correo electrónico')) {
+              setPasswordError('El correo electrónico ya está registrado.');
+            } else if (data.message.includes('nombre de usuario')) {
+              setPasswordError('El nombre de usuario ya está registrado.');
+            } else {
+              setPasswordError(data.message || 'Error en el registro.');
+            }
+          } else {
+            setPasswordError('Error en el registro. Por favor, inténtelo de nuevo.');
+          }
+        } else {
+          setPasswordError('Error de red. Verifique su conexión y vuelva a intentarlo.');
+        }
       });
   };
 
+  // Función para validar la fortaleza de la contraseña
   const validatePassword = (password) => {
     const regex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
     return regex.test(password);
   };
 
+  // Función para alternar la visibilidad de la contraseña
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -88,10 +115,12 @@ function RegisterPage() {
             Registrarse
           </button>
         </form>
+        <p className="mt-4 text-center">
+          ¿Ya tienes una cuenta? <Link to="/" className="text-blue-500 hover:underline">Iniciar sesión</Link>
+        </p>
       </div>
     </div>
   );
 }
 
 export default RegisterPage;
-

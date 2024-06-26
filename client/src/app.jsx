@@ -4,7 +4,7 @@ import LoginPage from './views/Login/LoginPage';
 import RegisterPage from './views/Register/RegisterPage';
 import ForgotPassword from './views/Password/ForgotPassword';
 import ResetPassword from './views/Password/ResetPassword';
-import HomePage from './views/Home/HomePage';
+import ProfilePage from './views/Profile/ProfilePage';
 
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="/home" element={<HomePage />} />
+      <Route path="/profile" element={<ProfilePage />} />
 
     </Routes>
   );
